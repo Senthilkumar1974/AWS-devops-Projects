@@ -1,0 +1,31 @@
+.LOG 
+aws configure - configure user
+
+//------- > code deploy agent prepare & Install
+# yum update
+# yum install ruby -y
+# yum install wget -y
+# wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
+# chmod +x install
+# ./install auto
+# service codedeploy-agent status
+
+under /root/
+mkdir /deploy_dir/
+cd /deploy_dir/
+mkdir sampleapp
+cd sampleapp-
+---------code deploy PROCESS SCRIPTS
+mkdir scrpipts
+cd scripts
+
+
+aws deploy create-application --application-name sampleapp
+aws deploy push --application-name sampleapp --s3-location s3://s3b-cdcp/sampleapp.zip
+
+aws s3 cp sampleapp.zip s3://s3b-cdcp
+ zip -r ../sampleapp.zip .(. - current directory)
+
+08:51 PM 09-01-2021
+
+09:31 AM 13-01-2021

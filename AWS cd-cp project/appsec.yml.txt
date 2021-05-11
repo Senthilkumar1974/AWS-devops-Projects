@@ -1,0 +1,35 @@
+/---The files: section says what are files to be copied in which directory of the destination machine
+version: 0.0
+os: linux
+files:
+ - source: /index.html
+   destination: /var/www/html/
+hooks:
+ BeforeInstall:
+  - location: scripts/httpd_install.sh
+    timeout: 300
+    runas: root
+  - location: scripts/httpd_start.sh
+    timeout: 300
+    runas: root
+ ApplicationStop:
+  - location: scripts/httpd_stop.sh
+    timeout: 300
+    runas: root
+//-------------------------------------------folder creation for development & PROCESS SCRIPTS	
+
+under /root/
+mkdir /deploy_dir/
+cd /deploy_dir/
+mkdir sampleapp
+cd sampleapp-
+---------code deploy PROCESS SCRIPTS
+mkdir scrpipts
+cd scripts
+
+
+aws deploy create-application --application-name sampleapp
+aws deploy push --application-name sampleapp --s3-location s3://s3b-cdcp/sampleapp.zip
+zip -r ../sampleapp.zip .(. - current directory)
+aws s3 cp sampleapp.zip s3://s3b-cdcp
+ 
