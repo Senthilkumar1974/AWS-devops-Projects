@@ -1,0 +1,4 @@
+/var/run/docker.sock is a Unix domain socket. Sockets are used in your favorite Linux distro to allow different processes to communicate with one another. Like everything in Unix, sockets are files, too. In the case of Docker, /var/run/docker.sock is a way to communicate with the main Docker process and, because it’s a file, we can share it with containers.
+
+about /var/run/docker.sock
+Communicate with the Docker daemon from within a container

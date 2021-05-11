@@ -1,0 +1,48 @@
+# cd /opt
+# wget  https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-6.7.6.zip 
+# unzip sonarqube-6.0.zip
+# mv /opt/sonarqube-6.0 /opt/sonar
+
+
+
+mysql -h sonarqubedb1.czjw6lpzdlon.ap-south-1.rds.amazonaws.com -usonarqubedb1 -p sonarqubedb1
+
+Edit sonar properties file to uncomment and provide required information for below properties.
+
+File Name: /opt/sonar/conf/sonar.properties
+sonar.jdbc.username=sonar
+sonar.jdbc.password=sonar
+sonar.jdbc.url=jdbc:mysql://<RDS_DATABAE_ENDPOINT>:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance&useSSL=false
+sonar.web.host=0.0.0.0
+sonar.web.context=/sonar
+Start SonarQube service
+
+# cd /opt/sonar/bin/linux-x86-64/
+# ./sonar.sh start
+
+
+CREATE DATABASE sonar CHARACTER SET utf8 COLLATE utf8_general_ci;
+Create a local and a remote user
+
+CREATE USER sonar@localhost IDENTIFIED BY 'sonar';
+CREATE USER sonar@'%' IDENTIFIED BY 'sonar';
+Grant database access permissions to users
+
+GRANT ALL ON sonar.* TO sonar@localhost
+From Damodaran J to Everyone:  06:23 PM
+GRANT ALL ON sonar.* TO sonar@'%';
+check users and databases
+
+use mysql
+show databases;
+SELECT User FROM mysql.user;
+FLUSH PRIVILEGES;
+QUIT
+
+install java  sudo yum install java-1.8.0
+
+/opt/sonar/bin/linux-x86-64
+
+Do changes in wrapper.conf file: /opt/sonar/conf
+From Ganesh.C to Everyone:  06:23 PM
+will you share the document , sir ?

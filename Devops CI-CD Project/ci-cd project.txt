@@ -1,0 +1,187 @@
+https://github.com/damodaranj/my-app
+
+Q1. Flow of CI-CD 
+
+Q2:to integrate jenkins & tomcat - where the package will be stored or where to get the package
+Ans : /target/
+COPY /target/newapp.war /usr/local/tomcat/webapps
+
+Q3: What atall Plugins willbe installed with Jenkins
+
+Folders 	|OWASP Markup 		| Build Timeout		| Credentials Binding 
+Timestamper 	|Workspace Cleanup 	|Ant 			|Gradle
+Pipeline 	|GitHub Branch Source 	|Pipeline: GitHub 	|Pipeline: Stage View
+					Groovy Libraries 
+Git 		|SSH Build Agents	|Matrix Authorization  	|PAM Authentication
+					|Strategy
+LDAP 		|Email Extension 	|Mailer
+
+
+Q4: What are Plugins you are used with Jenkins
+1.Maven Integration
+2.sonarqube scanner
+
+Q5:How to Pass Credentials in Jenkins
+Jenkins --> dashboard - Manage Jenkins
+Under Security --> Manage Credentials.(jenkins)
+Jenkins --> (system)-Global Credentials--> Add Credentials-->Secret text --> secret (as dockerhubs password)
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Installation Process -
+
+yum install git -y 	# install git in amz-linux machine
+yum install docker -y	# install docker in amz-linux machine
+service docker status	# to check docker is active / start
+service docker start	# to start docker again
+
+Jenkins install
+https://wiki.jenkins.io/display/JENKINS//Installing+Jenkins+on+Red+Hat+distributions
+sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins.io/redhat/jenkins.repo
+sudo rpm --import http://pkg.jenkins.io/redhat/jenkins.io.key
+sudo yum install jenkins
+
+Install Java
+sudo yum install java
+service jenkins start	# to start jenkins again
+service jenkins status	# to check jenkins is active / start
+chkconfig jenkins on
+chkconfig 		#start/stop - to check jenkins running status
+###
+chkconfig 
+This output shows SysV services only and does not include native
+      systemd services. SysV configuration data might be overridden by native
+      systemd configuration.
+
+      If you want to list systemd services use 'systemctl list-unit-files'.
+      To see services enabled on particular target use
+      'systemctl list-dependencies [target]'.
+
+jenkins         0:off   1:off   2:off   3:on    4:off   5:on    6:off
+netconsole      0:off   1:off   2:off   3:off   4:off   5:off   6:off
+network         0:off   1:off   2:on    3:on    4:on    5:on    6:off
+[root@ip-172-31-46-68 ~]#
+######
+unlock jenkins
+/var/lib/jenkins/secrets/initialAdminPassword
+
+Download & install Maven for apache
+http://mirrors.estointernet.in/apache/maven/maven-3
+http://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/
+apache-maven-3.6.3-bin.tar.gz - copy the link address 
+(wget http://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz ) 
+tar -zxvf apache-maven-3.6.3-bin.tar.gz # to unzip the apache-maven-3.6.3-bin.tar.gz
+
+####-------------------------------------------------- My source-------------------------------
+####
+
+node{
+   stage('SCM Checkout'){
+     git 'https://github.com/Senthilkumar1974/my-app.git'
+   }
+   stage('Compile-Package'){
+
+      def mvnHome =  tool name: 'maven3', type: 'maven'   
+      sh "${mvnHome}/bin/mvn clean package"
+	  sh 'mv target/myweb*.war target/newapp.war'
+   }
+	stage('Remove Previous Container'){
+	try{
+		sh 'docker rm -f tomcattest'
+	}catch(error){
+		//  do nothing if there is an exception
+	}
+   stage('Build Docker Imager'){
+   sh 'docker build -t sendocx/myweb:0.0.2 .'
+   }
+   stage('Docker Image Push'){
+   withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
+   sh "docker login -u sendocx -p ${dockerPassword}"
+    }
+   sh 'docker push sendocx/myweb:0.0.2'
+   }
+   stage('Docker deployment'){
+   sh 'docker run -d -p 8090:8080 --name tomcattest sendocx/myweb:0.0.2' 
+   }
+   stage('SonarQube Analysis') {
+	        def mvnHome =  tool name: 'maven3', type: 'maven'
+	        withSonarQubeEnv('sonar') { 
+	          sh "${mvnHome}/bin/mvn sonar:sonar"
+ 	}
+	stage('Nexus Image Push'){
+   sh "docker login -u admin -p admin123 13.233.122.57:8083"
+   sh "docker tag sendocx/myweb:0.0.2 13.233.122.57:8083/sendocx:1.0.0"
+   sh 'docker push 13.233.122.57:8083/sendocx:1.0.0'
+   }
+ }
+}
+
+http://13.233.122.57:8081/
+
+27-12-2020
+install mysql in amazon linux
+
+# yum install mysql -y
+
+java path
+/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.265.b01-1.amzn2.0.1.x86_64/jre/bin
+/opt/sonarqube-6.7.6/bin/linux-x86-64
+
+
+nexus --
+
+https://qiita.com/leechungkyu/items/86cad0396cf95b3b6973
+https://help.sonatype.com/repomanager3/download
+cd /opt
+wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz 
+
+
+
+
+
+------##### prometheus ######
+
+# my global config
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+      monitor: 'codelab-monitor'
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first.rules"
+  # - "second.rules"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'docker'
+         # metrics_path defaults to '/metrics'
+         # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ['localhost:9323']
+
+docker run -it -d --name prom -v /etc/prometheus:/etc/prometheus -p 9090:9090 prom/prometheus
+
+https://docs.docker.com/config/daemon/prometheus/
+
+### Cadvisor for prometheus installation 
+docker run -d --name cadvisor -p 8081:8080 -v /:/rootfs:ro -v /var/run:/var/run:rw -v /sys:/sys:ro -v /var/lib/docker/:/var/lib/docker:ro google/cadvisor
+
+http://13.126.139.29:8080/github-webhook/
