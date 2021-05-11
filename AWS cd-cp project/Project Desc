@@ -1,0 +1,22 @@
+Project Code Deployment Code Pipeline in AWS 
+Code Deploy is a deployment service from AWS which can automate application
+deployments to Amazon EC2 instances, on‐premises instances or Lambda functions. This 
+does a onetime deployment,  
+Code Pipeline for scheduling of deployment you may have to use AWS Code Pipeline also. 
+Scope of the Project : 
+  1.Developer Developing Application code & Stored the source code file into Storage 
+container (S3 Bucket)., the code Repository 
+2.The CODE DEPLOYMENT Tool Fetch the file from the code Repository  S3, and  deploy to 
+the Web server or deployment Machine by Serive using Code Deploy Agent.  
+This is one time Deployment Process. 
+3. This process 1 & 2 may have happened again and again, and the repeated process has 
+watch / monitored by a monitoring tool Cloud WATCH. If The code refreshed / reinitiate 
+/newcode update like process , the monitoring tool will check &  inform to the continues / 
+scheduled deployment tool Code PIPELINE about  the changes that happened in the code 
+Repository  S3.  
+Here the the continues / scheduled deployment tool Code PIPELINE acts a Manager, 
+4.To manages the new code availability / modification happened / anay chages occured
+The Code Pipeline instruct  to Code Deploy about the modifications happened in Storage 
+container and ask the Code Deployer to Deploy the new changes to Webserver.  
+5.Deployment Success ,  the Code PIPELINE send notifications about the changes to 
+clients/customers through SNS messaging / mailing service.
