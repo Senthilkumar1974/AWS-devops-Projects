@@ -1,0 +1,110 @@
+.LOG
+--/// UserData 
+
+#!/bin/bash
+yum install httpd php-mysql -y
+amazon-linux-extras install -y php7.3
+cd /var/www/html
+echo "healthy" > healthy.html
+wget https://wordpress.org/latest.tar.gz
+tar xvzf latest.tar.gz
+cp -r wordpress/* /var/www/html/
+rm -rf wordpress
+rm -rf latest.tar.gz
+chmod -R 755 wp-content
+chown -R apache:apache wp-content
+wget https://s3.amazonaws.com/bucketforwordpresslab-donotdelete/htaccess.txt
+mv htaccess.txt .htaccess
+chkconfig httpd on
+service httpd start
+/---------
+service httpd status
+
+vi wp-config.php
+cp wp-config.php /var/www/html/
+ls -ltr
+
+in wordpress url give host name with port like hostname:3306
+
+in httpd.conf file
+AllowOverride All
+ restart httpd
+attach s3 role in ec2 instance
+
+httpd://13.127.82.231/wp-admin/--- admin url
+click on post whici is in below at glance
+click add new post-add contetnt--
+check with public ip u should get new post
+
+crete iam user
+create s3 bucket with full permission
+create cloudfront
+
+go to wordpress admin page
+plugins
+
+install new--search
+
+https://docs.sws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html
+
+{
+"Version":2012-10-17",
+"Statement":[
+  	{
+   	"Sid":"AddPerm",
+   	"Effect":Allow",
+	"Principal": "*",
+	"Action":["arn:swa:s3:::examplebucket/*"]
+	}
+    ]
+}
+crone commands
+[root@ip-172-31-36-101 html]# history
+    1  cd /var/www/html
+    2  export EDITOR=vi
+    3  crontab -e
+    4  crontab -l
+    5  clear
+    
+dev
+
+*/5 * * * * aws s3 sync --delete /var/www/html/wp-content/uploads s3://awstrial-wp-media
+*/5 * * * * aws s3 sync --delete /var/www/html/ s3://awstrial-wordpress-code
+
+Prod
+
+*/3 * * * * aws s3 sync --delete s3://awstrial-wp-media /var/www/html/wp-content/uploads 
+*/3 * * * * aws s3 sync --delete s3://awstrial-wordpress-code /var/www/html/ 
+
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mon-scripts.html
+
+
+{
+"cloudwatch.emitMetrics':True,
+"kinesis.endpoint":"https://kinesis.ap-south-1.amazonaws.com",
+"flows":[
+   {
+	"filepattern":"var/log/httpd/access_log",
+	"deliveryStream":"apachelogs-1"
+   }
+10:35 PM 23-10-2020
+
+12:37 AM 24-10-2020
+
+11:13 PM 25-10-2020
+
+12:48 AM 27-10-2020
+
+07:57 AM 31-10-2020
+
+10:47 AM 11-11-2020
+
+08:52 PM 17-11-2020
+
+08:11 PM 18-11-2020
+sudo ssh -i /C:/AWSVPC1110.pem i-0c7ab0ca7209b397d-ec2-user@i-0c7ab0ca7209b397d-ec2-13-250-55-96.ap-southeast-1.compute.amazonaws.com
+11:31 PM 19-11-2020
+
+07:07 PM 19-12-2020
+
+06:49 AM 29-12-2020
