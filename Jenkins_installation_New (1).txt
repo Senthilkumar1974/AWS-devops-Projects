@@ -1,0 +1,112 @@
+What is Jenkins?
+================
+
+Jenkins: is an open-source, Continuous Intergration Tool.
+
+Jenkins: written in Java.
+
+Jenkins: is a server-based system running in a servlet container such as Apache Tomcat.
+
+Jenkins: is an award-winning application that monitors executions of repeated jobs, such as building a software project or jobs run by cron. 
+
+Jenkins: has job types such as Freestyle, External, Multi-config.
+
+Jenkins’core functionality and flexibility allow it to fit in a variety of environments and can help streamline the development process for all stakeholders involved.
+
+
+Jenkins - History:
+==================
+
+=> 2005 - Hudson was first release by Kohsuke Kawaguchi of Sun Microsystems
+
+=> 2010 – Oracle bought Sun Microsystems
+	Due to a naming dispute, Hudson was renamed to Jenkins
+	Oracle continued development of Hudson (as a branch of the original) 
+
+Why Jenkins?
+============
+
+- Jenkins is a highly configurable system by itself.
+
+- The additional community developed plugins provide even more 'Flexibility'.
+
+- By combining Jenkins with Ant, Gradle, or other Build Automation tools, the possibilities are limitless.
+
+
+Jenkin Won Awards:
+==================
+
+- InfoWorld Bossies Award, 2011
+- O'Reilly Open-Source Award, 2011
+- ALM&SCM, SDTimes 100, 2010, 2011
+- GlassFish Community Innovation Award 2008
+- Duke's Choice Award 2008 
+
+
+What can Jenkins do?
+====================
+
+- Generate test reports
+- Integrate with many different Version Control Systems
+- Push to various artifact repositories
+- Deploys directly to production or test environments
+- Notify stakeholders of build status
+- and many much..
+
+
+Who uses Jenkins? 
+=================
+
+- Linkedin
+- NASA
+- NETFLIX
+- ebay
+- Michelin
+- Mozilla foundation
+
+
+Create an Ubuntu machine ["Ubuntu Server 16.04 LTS (HVM), SSD Volume Type"] with ALL TCP enabled in the security group.
+Login into it server as 'ubuntu' user & switch as a 'root' user.
+
+Jenkins Pre-Requisite: Java installation:
+=========================================
+
+1) sudo add-apt-repository ppa:webupd8team/java
+2) sudo apt-get update
+3) sudo apt install openjdk-8-jdk
+4) java -version
+
+Jenkins Installation:
+=====================
+
+
+1) wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+
+2) sudo sh -c 'echo deb https://pkg.jenkins.io/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
+
+3) sudo apt-get update
+
+4) sudo apt-get install jenkins
+
+5) Verify:-
+(i) ps -ef | grep jenkins
+(ii) Jenkins will be launched as a daemon up on start - Check under /etc/init.d/jenkins
+(iii) /etc/default/jenkins will capture configuration parameters for the launch like e.g JENKINS_HOME.
+
+6) launch the Jenkins URLS in the browser:-
+<ubuntu_ip_address>:8080
+
+7) Get the Password from the path : /var/lib/jenkins/secrets/initialAdminPassword
+
+---------------------------------------------------------------------------------
+/etc/default# cat /var/lib/jenkins/secrets/initialAdminPassword
+6aba06880c534f85afba6be0085d2fd9
+root@ip-172-31-28-251:/etc/default#
+---------------------------------------------------------------------------------
+
+8) Click "Install Suggested Plugins" - Then the installation gets started.
+
+9) Create a new user of your own by giving Name, Email-id, username, password.
+
+10) Then Login into the console and explore Jenkins.
+
